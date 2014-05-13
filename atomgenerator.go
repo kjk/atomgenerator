@@ -70,6 +70,8 @@ type Category struct {
 }
 
 type Entry struct {
+	// Will be auto-generated if not given
+	Id string
 	// Required.
 	Title string
 	// Required.
@@ -151,12 +153,15 @@ func (e *Entry) genId() string {
 
 func newEntryXml(e *Entry) *entryXml {
 	x := &entryXml{
-		Id:         e.genId(),
+		Id:         e.Id,
 		Title:      e.Title,
 		Link:       &linkXml{Href: e.Link, Rel: "alternate"},
 		Updated:    e.PubDate.Format(time.RFC3339),
 		Categories: e.categories,
 		Authors:    e.authors,
+	}
+	if x.Id == "" {
+		x.Id = e.genId()
 	}
 
 	if len(e.Description) > 0 {
